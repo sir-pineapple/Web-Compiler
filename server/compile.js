@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const multer = require('multer');
-
 const Docker = require('dockerode');
 
 async function runCode(lang, file) {
