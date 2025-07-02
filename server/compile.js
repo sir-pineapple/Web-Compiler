@@ -7,7 +7,7 @@ async function runCode(lang, file) {
     if (!file) {
         return {statusCode: 403, message: "no file received"};
     }
-    const filePath = file.path;
+    const filePath = path.resolve(file.path);
     const fileName = file.originalname;
     const outputName = path.parse(fileName).name;
     var package;
@@ -40,7 +40,7 @@ async function runCode(lang, file) {
         `${shellcommand}`
     ], process.stdout, {
         Binds: [
-            `${path.resolve(filePath)}:/app/${fileName}`
+            `${filePath}:/app/${fileName}`
         ]
     })
     .then(() => {
