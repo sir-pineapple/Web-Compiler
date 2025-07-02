@@ -4,8 +4,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-COPY run_code.sh /app/run_code.sh
+COPY code.c /app/code.c
 
-RUN chmod +x /app/run_code.sh
+RUN gcc code.c -o code
 
-ENTRYPOINT ["/app/run_code.sh"]
+ENTRYPOINT ["/app/a.out"]
