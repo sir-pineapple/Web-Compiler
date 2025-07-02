@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Compiler</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Web Compiler</h1>
+    <label for="languageSelect">Select Language:</label>
+    <select id="languageSelect" class="dropdown">
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
+      <option value="java">Java</option>
+      <option value="python">Python</option>
+    </select>
+    <label for="fileInput">Or Upload a File:</label>
+    <input type="file" id="fileInput" class="file-upload" />
+    <textarea id="codeInput" class="code-editor" placeholder="Write your code here..."></textarea>
+    
+    <button id="compileBtn" class="btn">Compile Code</button>
+    
+    <div id="output" class="output"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
