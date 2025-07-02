@@ -13,7 +13,7 @@ const file = new Blob([userInput], { type: 'text/plain' });
 
 // Create a FormData object to send the file
 const formData = new FormData();
-formData.append('file', file, 'code.c');
+formData.append('file', file, '../code.c');
 
 // Send the file to the backend
 fetch('http://localhost:3000/compile/c', {
