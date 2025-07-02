@@ -1,13 +1,7 @@
-FROM ubuntu:latest
-
-ENV DEBIAN_FRONTEND:noninteractive
-
-RUN apt-get update && apt-get install default-jre
+FROM openjdk:latest
 
 WORKDIR /app
 
-COPY run_code.sh /app/run_code.sh
+COPY HelloWorld.java /app/HelloWorld.java
 
-RUN chmod +x /app/run_code.sh
-
-ENTRYPOINT ["/app/run_code.sh"]
+ENTRYPOINT ["sh", "-c", "javac /app/HelloWorld.java && java -cp /app HelloWorld || (echo 'Compilation or execution failed' && exit 1)"]

@@ -1,11 +1,7 @@
-FROM ubuntu:latest
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM gcc:latest
 
 WORKDIR /app
 
 COPY code.c /app/code.c
 
-RUN gcc code.c -o code
-
-ENTRYPOINT ["/app/a.out"]
+ENTRYPOINT ["sh", "-c", "gcc -o /app/code /app/code.c && /app/code || (echo 'Compilation failed' && exit 1)"]

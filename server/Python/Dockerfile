@@ -1,11 +1,7 @@
-FROM ubuntu:latest
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM python:latest
 
 WORKDIR /app
 
-COPY run_code.sh /app/run_code.sh
+COPY code.py /app/code.py
 
-RUN chmod +x /app/run_code.sh
-
-ENTRYPOINT ["/app/run_code.sh"]
+ENTRYPOINT ["sh", "-c", "python /app/code.py || (echo 'Execution failed' && exit 1)"]

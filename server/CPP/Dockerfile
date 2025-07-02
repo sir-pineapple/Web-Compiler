@@ -1,11 +1,7 @@
-FROM ubuntu:latest
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM gcc:latest
 
 WORKDIR /app
 
-COPY run_code.sh /app/run_code.sh
+COPY code.cpp /app/code.cpp
 
-RUN chmod +x /app/run_code.sh
-
-ENTRYPOINT ["/app/run_code.sh"]
+ENTRYPOINT ["sh", "-c", "g++ -o /app/code /app/code.c && /app/code || (echo 'Compilation failed' && exit 1)"]
