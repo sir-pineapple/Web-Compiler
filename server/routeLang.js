@@ -26,7 +26,6 @@ langRouter.post("/python", upload.single("file"), async (req, res) => {
     res.status(statusCode).json({message: message});
 })
 
-
 module.exports = {
-    langRouter: langRouter
+    langRouter
 }

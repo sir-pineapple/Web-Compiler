@@ -44,7 +44,7 @@ async function runCode(lang, file) {
         ]
     })
     .then(() => {
-        return {statusCode: 200, message: "code executed successfully"};
+        return;
     })
     .catch((err) => {
         console.error(err);
@@ -53,6 +53,7 @@ async function runCode(lang, file) {
     .finally(() => {
         fs.unlinkSync(filePath);
     })
+    return {statusCode: 200, message: "code executed successfully"};
 }
 
 module.exports = {
