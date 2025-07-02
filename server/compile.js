@@ -10,7 +10,7 @@ compileRouter.post("/cpp", (req, res) => {
 compileRouter.post("/java", (req, res) => {
 })
 
-compilerRouter.post("/python", (req, res) => {
+compileRouter.post("/python", (req, res) => {
 })
 
 module.exports = {
