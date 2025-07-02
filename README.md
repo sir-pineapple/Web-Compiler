@@ -1,2 +1,2 @@
 # Web-Compiler
-An online compiler made using MERN stack
+An simple online compiler that supports C, C++, Java and Python
