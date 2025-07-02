@@ -7,7 +7,6 @@ async function runCode(lang, file) {
     if (!file) {
         return {statusCode: 403, message: "no file received"};
     }
-    const docker = new Docker();
     const filePath = file.path;
     const fileName = file.originalname;
     const outputName = path.parse(fileName).name;
@@ -33,6 +32,7 @@ async function runCode(lang, file) {
         default:
             return {status: 503, message: "invalid language"};
     }
+    const docker = new Docker();
     docker
     .run(`${package}:latest`, [
         "sh",
