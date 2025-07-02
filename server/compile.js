@@ -30,7 +30,7 @@ async function runCode(lang, file) {
             shellcommand = `python3 /app/${fileName} || (echo 'Execution failed' && exit 1)`;
             break;
         default:
-            return {status: 503, message: "invalid language"};
+            return {status: 403, message: "invalid language"};
     }
     const docker = new Docker();
     docker
