@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-const { langRouter } = require("./compile");
+const { langRouter } = require("./routeLang");
 
 app.use("/compile", langRouter);
 

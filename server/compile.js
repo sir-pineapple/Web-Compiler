@@ -1,11 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const multer = require('multer')
-const upload = multer({ dest: "../codes/" });
+const multer = require('multer');
 
 const Docker = require('dockerode');
-const { compileFunction } = require('vm');
 
 async function runCode(lang, file) {
     if (!file) {

@@ -1,7 +1,10 @@
 const { Router } = require('express');
 const langRouter = Router();
 
-const { runCode } = require("./compile");   
+const { runCode } = require("./compile");
+
+const multer = require('multer')
+const upload = multer({ dest: "../codes/" });
 
 langRouter.post("/c", upload.single("file"), async (req, res) => {
     const { statusCode, message } = await runCode("C", req.file);
