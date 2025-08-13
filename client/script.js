@@ -33,12 +33,8 @@ document.getElementById('compileBtn').addEventListener('click', function() {
     method: 'POST',
     body: formData,
   })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((data) => {
-      document.getElementById('output').textContent = data;
+      document.getElementById('output').textContent = data.message;
     })
-    .catch((error) => {
-      console.error('Error:', error);
-      document.getElementById('output').textContent = "An error occurred while compiling.";
-    });
 });
