@@ -15,6 +15,17 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	  "dev": "nodemon src/index.js",
+	  "start": "node src/index.js"
+  },
+  "dependencies": {
+    "bullmq": "^5.76.10",
+    "dockerode": "^5.0.0",
+    "dotenv": "^17.4.2",
+    "ioredis": "^5.10.1",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
