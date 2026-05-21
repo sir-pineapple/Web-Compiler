@@ -30,6 +30,7 @@ services:
       context: ./app/worker
     volumes:
       - ./app/worker:/app
+      - ./app/worker/temp:/app/temp
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       ./app/worker/.env

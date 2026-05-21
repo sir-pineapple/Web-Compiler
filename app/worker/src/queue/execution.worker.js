@@ -1,17 +1,38 @@
 const { Worker } = require("bullmq");
 const redis = require("../config/redis");
+const createTempDir = require("../sandbox/createTempDir");
+const writeFiles = require("../sandbox/writeFiles");
+const cleanup = require("../sandbox/cleanup");
+const runContainer = require("../docker/containerManager");
 
 const worker = new Worker(
     "executionQueue",
 
     async (job) => {
-        console.log("Job received:");
+        const {
+            language,
+            code,
+            stdin
+        } = job.data;
 
-        console.log(job.data);
+        let tempDir;
 
-        return {
-            success: true
-        };
+        try {
+            tempDir = await createTempDir(job.data.executionId);
+
+            await writeFiles(tempDir, language, code, stdin);
+            const output = await runContainer(language, tempDir);
+
+            console.log("Execution Output:");
+            console.log(output);
+
+            return { success: true, output };
+        }
+        finally {
+            if (tempDir) {
+                await cleanup(tempDir);
+            }
+        }
     },
 
     { connection: redis }
