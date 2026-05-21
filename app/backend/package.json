@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for Web-Compiler",
+  "homepage": "https://github.com/sir-pineapple/Web-Compiler#readme",
+  "bugs": {
+    "url": "https://github.com/sir-pineapple/Web-Compiler/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sir-pineapple/Web-Compiler.git"
+  },
+  "license": "ISC",
+  "author": "sir-pineapple",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
