@@ -4,6 +4,7 @@ const createTempDir = require("../sandbox/createTempDir");
 const writeFiles = require("../sandbox/writeFiles");
 const cleanup = require("../sandbox/cleanup");
 const runContainer = require("../docker/containerManager");
+const { saveExecutionResult } = require("../services/execution.service");
 
 const worker = new Worker(
     "executionQueue",
@@ -22,6 +23,8 @@ const worker = new Worker(
 
             await writeFiles(tempDir, language, code, stdin);
             const result = await runContainer(language, tempDir);
+
+            await saveExecutionResult(job.data.executionId, result);
 
             console.log("Execution Result:");
             console.log(result);

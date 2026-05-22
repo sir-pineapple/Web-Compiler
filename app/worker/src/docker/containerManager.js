@@ -74,9 +74,7 @@ const runContainer = async (language, tempDir) => {
             status = "success";
             break;
         case 101:
-            status = "compiler_error";
-            stderr = stdout;
-            stdout = "";
+            status = "compile_error";
             break;
         case 102:
             status = "timeout";
