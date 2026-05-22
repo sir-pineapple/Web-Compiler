@@ -2,7 +2,7 @@ const Docker = require("dockerode");
 const path = require("path");
 
 const docker = new Docker({
-    sockerPath: "/var/run/docker.sock"
+    socketPath: "/var/run/docker.sock"
 });
 
 const languageImageMap = { cpp: "compiler-cpp" };
@@ -33,21 +33,60 @@ const runContainer = async (language, tempDir) => {
 
     await container.start();
 
-    const stream = await container.logs({
+    const  { PassThrough } = require("stream");
+
+    const logStream = await container.logs({
         stdout: true,
         stderr: true,
         follow: true
     });
 
-    let output = "";
+    let stdout = "";
+    let stderr = "";
 
-    stream.on("data", (chunk) => {
-        output += chunk.toString();
-    });
+    const stdoutStream = new PassThrough();
+    const stderrStream = new PassThrough();
 
-    await container.wait();
+    stdoutStream.on(
+        "data",
+        (chunk) => {
+            stdout += chunk.toString();
+        }
+    );
+
+    stderrStream.on(
+        "data",
+        (chunk) => {
+            stderr += chunk.toString();
+        }
+    );
+
+    container.modem.demuxStream(logStream, stdoutStream, stderrStream);
+
+    const result = await container.wait();
+    const exitCode = result.StatusCode;
     await container.remove();
-    return output;
+    
+    let status = "success";
+
+    switch (exitCode) {
+        case 0:
+            status = "success";
+            break;
+        case 101:
+            status = "compiler_error";
+            stderr = stdout;
+            stdout = "";
+            break;
+        case 102:
+            status = "timeout";
+            stderr = "Execution exceeded time limit";
+            break;
+        default:
+            status = "runtime_error";
+    }
+
+    return { status, stdout, stderr, exitCode };
 };
 
 module.exports = runContainer;

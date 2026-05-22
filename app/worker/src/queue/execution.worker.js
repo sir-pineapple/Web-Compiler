@@ -21,12 +21,12 @@ const worker = new Worker(
             tempDir = await createTempDir(job.data.executionId);
 
             await writeFiles(tempDir, language, code, stdin);
-            const output = await runContainer(language, tempDir);
+            const result = await runContainer(language, tempDir);
 
-            console.log("Execution Output:");
-            console.log(output);
+            console.log("Execution Result:");
+            console.log(result);
 
-            return { success: true, output };
+            return { success: true, result };
         }
         finally {
             if (tempDir) {
