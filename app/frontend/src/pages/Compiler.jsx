@@ -1,8 +1,8 @@
 import Editor from "../components/Editor"
 import LanguageSelector from "../components/LanguageSelector"
-import OutputPanel from "../components/OutputPanel"
+import Terminal from "../components/Terminal"
 import { executeCode, getExecution } from "../api/executionApi"
-import { useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 function Compiler() {
     const [language, setLanguage] = useState("cpp");
 
@@ -27,6 +27,7 @@ int main() {
     };
 
     const [code, setCode] = useState(starterCode.cpp);
+    const [stdin, setStdin] = useState("");
 
     const handleLanguageChange = (lang) => {
         setLanguage(lang);
@@ -36,12 +37,12 @@ int main() {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const runCode = async () => {
+    const runCode = useCallback(async () => {
         try {
             setLoading(true);
             setResult(null);
 
-            const execute = await executeCode(language, code);
+            const execute = await executeCode(language, code, stdin);
             const { executionId } = execute;
             const interval = setInterval(async () => {
                 const res = await getExecution(executionId);
@@ -56,7 +57,20 @@ int main() {
             console.error(err);
             setLoading(false);
         }
-    };
+    });
+
+    useEffect(() => {
+        const handler = (e) => {
+            const isCtrlEnter = e.ctrlKey && e.key === "Enter";
+            const isCmdEnter = e.metaKey && e.key === "Enter";
+            if (isCtrlEnter || isCmdEnter) {
+                e.preventDefault();
+                if (!loading) runCode();
+            }
+        };
+        document.addEventListener("keydown", handler);
+        return () => {document.removeEventListener("keydown", handler);};
+    }, [runCode, loading]);
 
     return (
         <div className="min-h-screen bg-zinc-950 text-white p-6">
@@ -70,20 +84,29 @@ int main() {
                     setLanguage={handleLanguageChange}
                 />
 
-                <button onClick={runCode} className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition cursor-pointer">
+                <button onClick={runCode} disabled={loading} className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-700 disabled:cursor-not-allowed">
                     {loading ? "Running..." : "Run"}
                 </button>
             </div>
 
-            <Editor
-                language={language}
-                code={code}
-                setCode={setCode}
-            />
+            <div className="grid grid-cols-12 gap-4 h-[calc(100vh-120px)]">
+                <div className="col-span-8 h-full">
+                    <Editor
+                        language={language}
+                        code={code}
+                        setCode={setCode}
+                        runCode={runCode}
+                    />
+                </div>
 
-            <OutputPanel
-                result={result}
-            />
+                <div className="col-span-4 h-full">
+                    <Terminal
+                        stdin={stdin}
+                        setStdin={setStdin}
+                        result={result}
+                    />
+                </div>
+            </div>
         </div>
     );
 }
