@@ -6,17 +6,35 @@ import { useState } from "react"
 function Compiler() {
     const [language, setLanguage] = useState("cpp");
 
-    const [code, setCode] = useState(
-`#include <iostream>
+    const starterCode = {
+        cpp: `#include <iostream>
 using namespace std;
 
 int main() {
     // Write your code here
-}`
-    );
+}`,
+        c: `#include <stdio.h>
+
+int main() {
+    // Write your code here
+}`,
+        java: `public class Main {
+    public static void main(String[] args) {
+        // Write your code here
+    }
+}`,
+        python: `# Write your code here`
+    };
+
+    const [code, setCode] = useState(starterCode.cpp);
+
+    const handleLanguageChange = (lang) => {
+        setLanguage(lang);
+        setCode(starterCode[lang]);
+    }
 
     const [result, setResult] = useState(null);
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const runCode = async () => {
         try {
@@ -49,7 +67,7 @@ int main() {
 
                 <LanguageSelector
                     language={language}
-                    setLanguage={setLanguage}
+                    setLanguage={handleLanguageChange}
                 />
 
                 <button onClick={runCode} className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition cursor-pointer">

@@ -5,7 +5,7 @@ const docker = new Docker({
     socketPath: "/var/run/docker.sock"
 });
 
-const languageImageMap = { cpp: "compiler-cpp" };
+const languageImageMap = { cpp: "compiler-cpp", c: "compiler-c", java: "compiler-java", python: "compiler-python" };
 
 const runContainer = async (language, tempDir) => {
     const hostTempDir = path.join(process.env.HOST_WORKER_TEMP, tempDir.split("/").pop());
