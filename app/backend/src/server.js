@@ -7,6 +7,7 @@ const executeRoutes = require("./routes/execute.routes");
 const statusRoutes = require("./routes/status.routes");
 const projectRoutes = require("./routes/project.routes");
 const authRoutes = require("./routes/auth.routes");
+const { runMigrations } = require("./services/migrations.service");
 
 const app = express();
 
@@ -27,6 +28,17 @@ app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
-    console.log(`Backend running on port ${PORT}`);
-});
+const startServer = async () => {
+    try {
+        await runMigrations();
+        app.listen(PORT, () => {
+            console.log(`Backend running on port ${PORT}`);
+        });
+    }
+    catch (err) {
+        console.error("Startup failed:", err);
+        process.exit(1);
+    }
+}
+
+startServer();
