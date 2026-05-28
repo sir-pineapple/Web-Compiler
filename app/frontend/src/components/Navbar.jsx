@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { logout } from "../api/authApi";
 
 function Navbar() {
+    const location = useLocation();
     const navigate = useNavigate();
     const { isLoggedIn } = useAuth();
     const handleProjects = () => {
@@ -10,7 +11,9 @@ function Navbar() {
             navigate("/projects");
         }
         else {
-            navigate("/login");
+            navigate("/login", {
+                state: { from: "/projects" }
+            });
         }
     };
     const handleLogout = async () => {

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar"
 import { login, getMe } from "../api/authApi"
 
 function Login() {
+    const location = useLocation();
+    const redirectTo = location.state?.from || "/";
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -12,7 +14,7 @@ function Login() {
         const check = async () => {
             const user = await getMe();
             if (user) {
-                navigate("/");
+                navigate(redirectTo);
             }
         };
         check();
@@ -22,7 +24,7 @@ function Login() {
         setError("");
         const response = await login(email, password);
         if (response.ok) {
-            navigate("/");
+            navigate(redirectTo);
         }
         else {
             const data = await response.json();
