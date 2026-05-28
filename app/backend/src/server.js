@@ -7,6 +7,7 @@ const executeRoutes = require("./routes/execute.routes");
 const statusRoutes = require("./routes/status.routes");
 const projectRoutes = require("./routes/project.routes");
 const authRoutes = require("./routes/auth.routes");
+const metricsRoutes = require("./routes/metrics.routes");
 const { runMigrations } = require("./services/migrations.service");
 
 const app = express();
@@ -25,6 +26,7 @@ app.use("/execute", executeRoutes);
 app.use("/execution", statusRoutes);
 app.use("/projects", projectRoutes);
 app.use("/auth", authRoutes);
+app.use("/metrics", metricsRoutes);
 
 const PORT = process.env.PORT;
 
