@@ -4,6 +4,7 @@ import Terminal from "../components/Terminal";
 import Navbar from "../components/Navbar";
 import { executeCode, getExecution } from "../api/executionApi";
 import { getProject } from "../api/projectApi";
+import useAutosave from "../hooks/useAutosave";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -12,6 +13,7 @@ function Compiler() {
     const [searchParams] = useSearchParams();
     const [projectId, setProjectId] = useState(null);
     const [projectName, setProjectName] = useState("Untitled Project");
+    const [saveStatus, setSaveStatus] = useState(null);
 
     const starterCode = {
         cpp: `#include <iostream>
@@ -66,6 +68,8 @@ int main() {
         }
     });
 
+    useAutosave({ projectId, projectName, language, code, stdin, setSaveStatus });
+
     useEffect(() => {
         const handler = (e) => {
             const isCtrlEnter = e.ctrlKey && e.key === "Enter";
@@ -110,9 +114,17 @@ int main() {
                     </h1>
 
                     {projectId && (
-                        <p className="text-sm text-zinc-400">
-                            Project Mode
-                        </p>
+                        <div className="flex items-center gap-2 text-sm text-zinc-400">
+                            <p>
+                                Project Mode
+                            </p>
+                            {saveStatus === "saving" && (
+                                <span>Saving...</span>
+                            )}
+                            {saveStatus === "saved" && (
+                                <span className="text-green-400">Saved</span>
+                            )}
+                        </div>
                     )}
 
                     <LanguageSelector
