@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Deploy application
         run: |
-          cd ../..
+          /home/dhruv/Documents/Web-Compiler
 
           git pull origin main
           
