@@ -4,7 +4,7 @@ const getExecution = async (req, res) => {
     const { id } = req.params;
     const result = await getExecutionResult(id);
     if (!result) {
-        result.json({
+        return res.json({
             status: "running"
         });
     }

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const API = "http://localhost:5000";
+const API_URL = `${import.meta.env.VITE_API_URL}`;
 
 export const executeCode = async (language, code, stdin = "") => {
-    const response = await axios.post(`${API}/execute`,
+    const response = await axios.post(`${API_URL}/execute`,
         {
             language,
             code,
@@ -14,6 +14,6 @@ export const executeCode = async (language, code, stdin = "") => {
 };
 
 export const getExecution = async (executionId) => {
-    const response = await axios.get(`${API}/execution/${executionId}`);
+    const response = await axios.get(`${API_URL}/execution/${executionId}`);
     return response.data;
 };

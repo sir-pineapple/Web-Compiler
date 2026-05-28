@@ -8,8 +8,8 @@ const register = async (req, res) => {
         const token = generateToken(user.userId);
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: "lax",
-            secure: false,
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: process.env.NODE_ENV === "production",
             maxAge:
                 7 *
                 24 *
@@ -31,8 +31,8 @@ const login = async (req, res) => {
         const token = generateToken(user.id);
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: "lax",
-            secure: false
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: process.env.NODE_ENV === "production"
         });
         res.json({ message: "Logged In" });
     }
