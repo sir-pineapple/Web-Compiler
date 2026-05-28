@@ -109,9 +109,13 @@ int main() {
             <Navbar />
             <div className="min-h-screen bg-zinc-950 text-white p-6">
                 <div className="flex items-center gap-4 mb-4">
-                    <h1 className="text-2xl font-bold">
-                        {projectId ? projectName : "Web Compiler"}
-                    </h1>
+                    {projectId ? (
+                        <input type="text" value={projectName} placeholder="Untitled Project" onChange={(e) => setProjectName(e.target.value)} className="text-2xl font-bold bg-transparent border-b border-transparent focus:border-zinc-600 outline-none text-white w-full" />
+                    ) : (
+                        <h1 className="text-2xl font-bold">
+                            Web Compiler
+                        </h1>
+                    )}
 
                     {projectId && (
                         <div className="flex items-center gap-2 text-sm text-zinc-400">
