@@ -8,6 +8,7 @@ const statusRoutes = require("./routes/status.routes");
 const projectRoutes = require("./routes/project.routes");
 const authRoutes = require("./routes/auth.routes");
 const metricsRoutes = require("./routes/metrics.routes");
+const debugRoutes = require("./routes/debug.routes");
 const { runMigrations } = require("./services/migrations.service");
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/execution", statusRoutes);
 app.use("/projects", projectRoutes);
 app.use("/auth", authRoutes);
 app.use("/metrics", metricsRoutes);
+app.use("/debug", debugRoutes);
 
 const PORT = process.env.PORT;
 

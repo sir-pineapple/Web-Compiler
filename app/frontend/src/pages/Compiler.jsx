@@ -4,6 +4,7 @@ import Terminal from "../components/Terminal";
 import Navbar from "../components/Navbar";
 import { executeCode, getExecution } from "../api/executionApi";
 import { getProject } from "../api/projectApi";
+import { debugCode } from "../api/debugApi";
 import useAutosave from "../hooks/useAutosave";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -14,6 +15,8 @@ function Compiler() {
     const [projectId, setProjectId] = useState(null);
     const [projectName, setProjectName] = useState("Untitled Project");
     const [saveStatus, setSaveStatus] = useState(null);
+    const [debugResult, setDebugResult] = useState(null);
+    const [debugLoading, setDebugLoading] = useState(false);
 
     const starterCode = {
         cpp: `#include <iostream>
@@ -37,19 +40,34 @@ int main() {
 
     const [code, setCode] = useState(starterCode.cpp);
     const [stdin, setStdin] = useState("");
+    const [result, setResult] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleLanguageChange = (lang) => {
+        setDebugResult(null);
         setLanguage(lang);
         setCode(starterCode[lang]);
     }
 
-    const [result, setResult] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const handleDebug = async() => {
+        try {
+            setDebugLoading(true);
+            const debug = await debugCode({ language, code, stdin, stdout: result?.stdout || "", stderr: result?.stderr || "", status: result?.status || "", exitCode: result?.exitCode || 0 });
+            setDebugResult(debug);
+        }
+        catch (err) {
+            console.error(err);
+        }
+        finally {
+            setDebugLoading(false);
+        }
+    };
 
     const runCode = useCallback(async () => {
         try {
             setLoading(true);
             setResult(null);
+            setDebugResult(null);
 
             const execute = await executeCode(language, code, stdin);
             const { executionId } = execute;
@@ -66,7 +84,7 @@ int main() {
             console.error(err);
             setLoading(false);
         }
-    });
+    }, [language, code, stdin]);
 
     useAutosave({ projectId, projectName, language, code, stdin, setSaveStatus });
 
@@ -139,9 +157,15 @@ int main() {
                     <button onClick={runCode} disabled={loading} className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-700 disabled:cursor-not-allowed">
                         {loading ? "Running..." : "Run"}
                     </button>
+
+                    {result && ["compile_error", "runtime_error", "timeout"].includes(result.status) && (
+                        <button onClick={handleDebug} disabled={debugLoading} className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 cursor-pointer disabled:bg-zinc-700 disabled:cursor-not-allowed">
+                            {debugLoading ? "Debugging..." : "Debug with AI"}
+                        </button>
+                    )}
                 </div>
 
-                <div className="grid grid-cols-12 gap-4 h-[calc(100vh-120px)]">
+                <div className="grid grid-cols-12 gap-4 h-[calc(100vh-120px)] overflow-hidden">
                     <div className="col-span-8 h-full">
                         <Editor
                             language={language}
@@ -151,12 +175,56 @@ int main() {
                         />
                     </div>
 
-                    <div className="col-span-4 h-full">
-                        <Terminal
-                            stdin={stdin}
-                            setStdin={setStdin}
-                            result={result}
-                        />
+                    <div className="col-span-4 h-full flex flex-col gap-4 overflow-hidden">
+                        <div className="shrink-0 overflow-hidden">
+                            <Terminal
+                                stdin={stdin}
+                                setStdin={setStdin}
+                                result={result}
+                            />
+                        </div>
+
+                        {debugResult && (
+                            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex-1 min-h-0 overflow-y-auto">
+                                <h2 className="text-lg font-semibold mb-4 text-center">
+                                    AI Debugger
+                                </h2>
+
+                                <div className="space-y-4">
+                                    <p className="text-red-400 font-medium mb-1">
+                                        Problem
+                                    </p>
+                                    <p className="text-zinc-300 break-words">
+                                        {debugResult.problem}
+                                    </p>
+                                </div>
+
+                                <div className="mb-4">
+                                    <p className="text-yellow-400 font-medium mb-1">
+                                        Cause
+                                    </p>
+                                    <p className="text-zinc-300 break-words">
+                                        {debugResult.cause}
+                                    </p>
+                                </div>
+
+                                <div className="mb-4">
+                                    <p className="text-green-400 font-mediu, mb-1">
+                                        Fix
+                                    </p>
+                                    <p className="text-zinc-300 break-words">
+                                        {debugResult.fix}
+                                    </p>
+                                </div>
+
+                                <button onClick={() => {
+                                    setCode(debugResult.updatedCode);
+                                    setDebugResult(null);
+                                }} className="w-full px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 transition-colors sticky bottom-0 cursor-pointer">
+                                    Auto Fix
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
