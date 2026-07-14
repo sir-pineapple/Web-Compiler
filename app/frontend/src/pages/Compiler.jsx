@@ -181,50 +181,11 @@ int main() {
                                 stdin={stdin}
                                 setStdin={setStdin}
                                 result={result}
+                                debugResult={debugResult}
+                                setDebugResult={setDebugResult}
+                                setCode={setCode}
                             />
                         </div>
-
-                        {debugResult && (
-                            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex-1 min-h-0 overflow-y-auto">
-                                <h2 className="text-lg font-semibold mb-4 text-center">
-                                    AI Debugger
-                                </h2>
-
-                                <div className="space-y-4">
-                                    <p className="text-red-400 font-medium mb-1">
-                                        Problem
-                                    </p>
-                                    <p className="text-zinc-300 break-words">
-                                        {debugResult.problem}
-                                    </p>
-                                </div>
-
-                                <div className="mb-4">
-                                    <p className="text-yellow-400 font-medium mb-1">
-                                        Cause
-                                    </p>
-                                    <p className="text-zinc-300 break-words">
-                                        {debugResult.cause}
-                                    </p>
-                                </div>
-
-                                <div className="mb-4">
-                                    <p className="text-green-400 font-mediu, mb-1">
-                                        Fix
-                                    </p>
-                                    <p className="text-zinc-300 break-words">
-                                        {debugResult.fix}
-                                    </p>
-                                </div>
-
-                                <button onClick={() => {
-                                    setCode(debugResult.updatedCode);
-                                    setDebugResult(null);
-                                }} className="w-full px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 transition-colors sticky bottom-0 cursor-pointer">
-                                    Auto Fix
-                                </button>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
