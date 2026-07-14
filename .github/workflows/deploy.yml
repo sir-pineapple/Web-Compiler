@@ -20,4 +20,4 @@ jobs:
 
           sleep 10
 
-          curl -f http://localhost/api/health
+          curl -f http://localhost:9080/api/health
