@@ -22,6 +22,7 @@ const runMigrations = async() => {
         }
         console.log(`Running migration; ${file}`);
         const sql = fs.readFileSync(path.join(migrationsDir, file), "utf8");
+        await pool.query(sql);
 
         await pool.query(`INSERT INTO schema_migrations (filename) VALUES ($1)`, [file]);
         console.log(`Migration applied: ${file}`);
