@@ -1,57 +1,105 @@
 services:
-
   frontend:
     build:
       context: ./app/frontend
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./app/frontend:/app
-      - /app/node_modules
-    depends_on:
-      - backend
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
   
   backend:
     build:
       context: ./app/backend
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./app/backend:/app
-      - /app/node_modules
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./app/backend/.env
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+  
+  worker:
+    build:
+      context: ./app/worker
+      dockerfile: Dockerfile.prod
     env_file:
       - ./app/backend/.env
     depends_on:
       - redis
       - postgres
-  
-  worker:
-    build:
-      context: ./app/worker
     volumes:
-      - ./app/worker:/app
-      - ./app/worker/temp:/app/temp
       - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-      ./app/worker/.env
-    depends_on:
-      - redis
+      - ./app/worker/temp:/app/temp
+    restart: unless-stopped
+  
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
   
   postgres:
     image: postgres:17-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: Web-Compiler
-    ports:
-      - "5432:5432"
+    env_file:
+      - ./app/backend/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
   
-  redis:
-    image: redis:8-alpine
+  nginx:
+    image: nginx:alpine
     ports:
-      - "6379:6379"
+      - "9080:80"
+    volumes:
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+  
+  compiler-cpp:
+    build:
+      context: ./infra/docker/cpp
+    image: compiler-cpp
+  
+  compiler-c:
+    build:
+      context: ./infra/docker/c
+    image: compiler-c
+  
+  compiler-java:
+    build:
+      context: ./infra/docker/java
+    image: compiler-java
+  
+  compiler-python:
+    build:
+      context: ./infra/docker/python
+    image: compiler-python
+  
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+  
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "9180:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  grafana_data:
