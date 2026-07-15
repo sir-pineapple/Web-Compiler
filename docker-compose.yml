@@ -2,13 +2,13 @@ services:
   frontend:
     build:
       context: ./app/frontend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     restart: unless-stopped
   
   backend:
     build:
       context: ./app/backend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     env_file:
       - ./app/backend/.env
     depends_on:
@@ -19,7 +19,7 @@ services:
   worker:
     build:
       context: ./app/worker
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     env_file:
       - ./app/backend/.env
     depends_on:
