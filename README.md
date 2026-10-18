@@ -243,7 +243,6 @@ The script loads the backend environment and connects to PostgreSQL. It exits wi
 This project executes user-submitted programs. Do not expose it publicly without a dedicated security review.
 
 - **Docker socket access is highly privileged.** The worker mounts `/var/run/docker.sock`; a compromised worker may gain control of the host Docker daemon. This is not equivalent to a strong security boundary.
-- **Execution containers are not a complete hostile-code sandbox.** The current worker configures no container network, 256 MiB memory, 0.5 CPU, and a PID limit of 50. Runner scripts apply a five-second program timeout. Review filesystem access, user privileges, capabilities, syscall filtering, disk/output limits, and concurrent-job controls before public deployment.
 - **Rate limiting and queue controls:** add request rate limits, queue-depth limits, concurrency limits, and abuse monitoring before accepting untrusted public traffic.
 - **Secrets:** keep `.env` files out of Git; rotate keys if exposed. Use strong database passwords and JWT secrets.
 - **Network exposure:** do not publish PostgreSQL, Redis, the Docker daemon, or monitoring dashboards directly to the internet. Restrict SSH and expose only the intended web entry point.
@@ -256,15 +255,5 @@ This project executes user-submitted programs. Do not expose it publicly without
 Potential next steps, depending on deployment goals:
 
 - Strengthen execution isolation and add abuse-resistant rate/concurrency/queue limits.
-- Add HTTPS, restricted monitoring access, and production-oriented secret management.
 - Expand and regularly re-evaluate the debugging knowledge base and retrieval test set.
-- Add more execution tests covering timeout, malformed input, large output, and cleanup behavior.
 - Document deployment-specific settings and resource requirements after testing on the target host.
-
-## Contributing
-
-Issues and pull requests are welcome. For changes to execution or retrieval, include reproducible steps and tests where practical. Never submit API keys, `.env` files, or sensitive execution data.
-
-## License
-
-No explicit license file was present in the repository archive at the time this README was prepared. Add a `LICENSE` file before describing the project as open source or granting reuse permissions.
